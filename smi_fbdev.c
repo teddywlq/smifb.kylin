@@ -54,7 +54,7 @@ static int smifb_create_object(struct smi_fbdev *afbdev,
 {
 	struct drm_device *dev = afbdev->helper.dev;
 #if LINUX_VERSION_CODE > KERNEL_VERSION(3,14,0)	
-	struct smi_device *cdev = dev->dev_private;
+	struct smi_device *UNUSED(cdev) = dev->dev_private;
 #endif	
 	u32 size;
 	struct drm_gem_object *gobj;

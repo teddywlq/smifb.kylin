@@ -280,17 +280,21 @@ static int smi_crtc_mode_set(struct drm_crtc *crtc,
 	u32 refresh_rate = drm_mode_vrefresh(mode);
 	struct smi_device *sdev = crtc->dev->dev_private;
 	logicalMode_t logicalMode;
-	logicalMode.valid_edid = false;
 	int need_to_scale = 0;
-
+	YUV_BUF_ADDR SrcAddr;
+	BLIT_BLK src;
+	BLIT_BLK dest;
+	
 	ENTER();
+	
+	logicalMode.valid_edid = false;
 	dbg_msg("***crtc addr:%p\n",crtc);
 	dbg_msg("x:%d,y:%d\n",x,y);
 	
 	dbg_msg("encode 0->crtc:[%p], 1->crtc:[%p] \n",smi_enc_tab[0]->crtc, smi_enc_tab[1]->crtc);
 	dbg_msg("Printf g_m_connector = %d,  DVI [%d], VGA[%d], HDMI[%d] \n",g_m_connector, g_m_connector&0x1, g_m_connector&0x2, g_m_connector&0x4);
 	
-	dbg_msg("wxh:%dx%d@%ldHz\n",adjusted_mode->hdisplay,adjusted_mode->vdisplay,refresh_rate);
+	dbg_msg("wxh:%dx%d@%dHz\n",adjusted_mode->hdisplay,adjusted_mode->vdisplay,refresh_rate);
 
 		
 	if(g_specId == SPC_SM750)
@@ -414,9 +418,7 @@ static int smi_crtc_mode_set(struct drm_crtc *crtc,
 				srcFormat = FFT_RGB565;
 			if(logicalMode.bpp==32)
 				srcFormat = FFT_RGBx888;
-			YUV_BUF_ADDR SrcAddr;
-			BLIT_BLK src;
-			BLIT_BLK dest;
+
 		
 			src.Width = adjusted_mode->hdisplay;
 			src.Height = adjusted_mode->vdisplay;

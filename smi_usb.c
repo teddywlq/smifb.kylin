@@ -130,6 +130,8 @@ int smi_ehci_init(struct drm_device *dev)
         int                     hcd_irq = 0;
 		struct pci_dev *pdev = dev->pdev;
 		struct smi_device *sdev = dev->dev_private;
+		resource_size_t phymem,phymem_len;
+		
 
 		if (usb_disabled())
 			return -ENODEV;
@@ -172,8 +174,8 @@ int smi_ehci_init(struct drm_device *dev)
         }
 
 
-         resource_size_t phymem = sdev->mc.vram_base + 0x7f00000;
-         resource_size_t phymem_len = 1 * 1024 * 1024;
+         phymem = sdev->mc.vram_base + 0x7f00000;
+         phymem_len = 1 * 1024 * 1024;
 #if 0
 		/*
 		 * Right now device-tree probed devices don't get dma_mask set.
