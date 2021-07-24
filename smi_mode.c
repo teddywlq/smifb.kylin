@@ -1051,9 +1051,10 @@ static enum drm_mode_status smi_connector_mode_valid(struct drm_connector *conne
 {
 	u32 vrefresh = drm_mode_vrefresh(mode);	
 	
-	if ((vrefresh < 29) || (vrefresh > 61) || (vrefresh > 31 && vrefresh < 59))  //We only support and use 30Hz or 60Hz mode currently.
-		return MODE_NOCLOCK;
-
+	if ((vrefresh < 29) || (vrefresh > 61) || (vrefresh > 31 && vrefresh < 59)){  
+		if(!edid_mode)
+			return MODE_NOCLOCK;
+	}
 
 	if ((mode->hdisplay > 3840) || (mode->vdisplay > 2160) || (mode->clock > 297000))
 		 return MODE_NOMODE;
