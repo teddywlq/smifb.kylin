@@ -11,6 +11,7 @@
 *******************************************************************/
 
 #include "linux/string.h"
+#include <linux/delay.h>
 
 #include "ddk768_reg.h"
 
@@ -876,6 +877,8 @@ pll_value_t *pPLL               /* Pre-calculated values for the PLL */
     pokeRegisterDWord((HORIZONTAL_SYNC+offset),
           FIELD_VALUE(0, HORIZONTAL_SYNC, WIDTH, pModeParam->horizontal_sync_width)
         | FIELD_VALUE(0, HORIZONTAL_SYNC, START, pModeParam->horizontal_sync_start - 1));
+		
+	 mdelay(5);
 
     pokeRegisterDWord((VERTICAL_TOTAL+offset),
           FIELD_VALUE(0, VERTICAL_TOTAL, TOTAL, pModeParam->vertical_total - 1)
