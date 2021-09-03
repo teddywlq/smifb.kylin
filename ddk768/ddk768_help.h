@@ -6,19 +6,20 @@
 #include <linux/ioport.h>
 #include <linux/io.h>
 #include <linux/uaccess.h>
-
+#include <linux/delay.h>
 
 
 #define PEEK32(addr) readl((addr)+mmio768)
 #define POKE32(addr,data) writel((data),(addr)+mmio768)
 
-
 #define peekRegisterDWord(addr) readl((addr)+mmio768)
-#define pokeRegisterDWord(addr,data) writel((data),(addr)+mmio768)
+#define pokeRegisterDWord(addr,data) do{\
+    writel((data),(addr)+mmio768);\
+    udelay(1);\
+}while (0)
 
 #define peekRegisterByte(addr) readb((addr)+mmio768)
 #define pokeRegisterByte(addr,data) writeb((data),(addr)+mmio768)
-
 
 /* Size of SM768 MMIO and memory */
 #define SM768_PCI_ALLOC_MMIO_SIZE       (2*1024*1024)

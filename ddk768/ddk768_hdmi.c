@@ -111,7 +111,7 @@ void Delay (void)
 
 void DelayMs (BYTE millisecond)
 {
-	mdelay(5*millisecond);
+	mdelay(millisecond);
 }
 
 //-----------------------------------------------------------------------------

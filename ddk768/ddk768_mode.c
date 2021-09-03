@@ -11,10 +11,8 @@
 *******************************************************************/
 
 #include "linux/string.h"
-#include <linux/delay.h>
 
 #include "ddk768_reg.h"
-
 #include "ddk768_chip.h"
 #include "ddk768_clock.h"
 #include "ddk768_power.h"
@@ -877,8 +875,6 @@ pll_value_t *pPLL               /* Pre-calculated values for the PLL */
     pokeRegisterDWord((HORIZONTAL_SYNC+offset),
           FIELD_VALUE(0, HORIZONTAL_SYNC, WIDTH, pModeParam->horizontal_sync_width)
         | FIELD_VALUE(0, HORIZONTAL_SYNC, START, pModeParam->horizontal_sync_start - 1));
-		
-	 mdelay(5);
 
     pokeRegisterDWord((VERTICAL_TOTAL+offset),
           FIELD_VALUE(0, VERTICAL_TOTAL, TOTAL, pModeParam->vertical_total - 1)
@@ -888,8 +884,6 @@ pll_value_t *pPLL               /* Pre-calculated values for the PLL */
           FIELD_VALUE(0, VERTICAL_SYNC, HEIGHT, pModeParam->vertical_sync_height)
         | FIELD_VALUE(0, VERTICAL_SYNC, START, pModeParam->vertical_sync_start - 1));
 
-
-    
     hdmi_channel = FIELD_GET(peekRegisterDWord(DISPLAY_CTRL+offset),
                                    DISPLAY_CTRL,
                                    HDMI_SELECT);    
@@ -925,7 +919,6 @@ pll_value_t *pPLL               /* Pre-calculated values for the PLL */
 		 ulTmpValue= FIELD_SET(ulTmpValue,DISPLAY_CTRL, HDMI_SELECT, CHANNEL0);
 	else
 		 ulTmpValue= FIELD_SET(ulTmpValue,DISPLAY_CTRL, HDMI_SELECT, CHANNEL1);
-
 
     pokeRegisterDWord((DISPLAY_CTRL+offset), ulTmpValue);
 
