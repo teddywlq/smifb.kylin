@@ -11,8 +11,11 @@
 *******************************************************************/
 
 #include "linux/string.h"
+#include <linux/delay.h>	
+
 
 #include "ddk768_reg.h"
+
 #include "ddk768_chip.h"
 #include "ddk768_clock.h"
 #include "ddk768_power.h"
@@ -840,6 +843,7 @@ pll_value_t *pPLL               /* Pre-calculated values for the PLL */
     unsigned long paletteRam;
     unsigned long offset, pllReg;
     unsigned long hdmi_channel;
+	unsigned long regvalue;
 #if 0 // print UHD register setting for debug.
     if (pLogicalMode->x == 3840)
         return(printModeRegisters(pLogicalMode, pModeParam, pPLL));
@@ -852,8 +856,21 @@ pll_value_t *pPLL               /* Pre-calculated values for the PLL */
     offset = (pLogicalMode->dispCtrl==CHANNEL0_CTRL)? 0 : CHANNEL_OFFSET;
 	pllReg = (pLogicalMode->dispCtrl==CHANNEL0_CTRL)? VCLK0_PLL : VCLK1_PLL;
 
-    /* Program PLL */
-    pokeRegisterDWord(pllReg, ddk768_formatPllReg(pPLL));
+
+	/* Turn off PLL at first. */
+    regvalue = peekRegisterByte(pllReg);
+    regvalue |= (1 << 0);
+    pokeRegisterDWord(pllReg, regvalue);
+    /* Poke setting. */
+    regvalue = ddk768_formatPllReg(pPLL);
+    regvalue |= (1 << 0);
+    pokeRegisterDWord(pllReg, regvalue);
+    /* Delay 100 us and turn on PLL. */
+    udelay(100);
+    regvalue = ddk768_formatPllReg(pPLL);
+    regvalue &= ~(1 << 0);
+    pokeRegisterDWord(pllReg, regvalue);
+  
     
 #if 0
     /* Frame buffer base */
@@ -884,6 +901,8 @@ pll_value_t *pPLL               /* Pre-calculated values for the PLL */
           FIELD_VALUE(0, VERTICAL_SYNC, HEIGHT, pModeParam->vertical_sync_height)
         | FIELD_VALUE(0, VERTICAL_SYNC, START, pModeParam->vertical_sync_start - 1));
 
+
+    
     hdmi_channel = FIELD_GET(peekRegisterDWord(DISPLAY_CTRL+offset),
                                    DISPLAY_CTRL,
                                    HDMI_SELECT);    
@@ -919,6 +938,7 @@ pll_value_t *pPLL               /* Pre-calculated values for the PLL */
 		 ulTmpValue= FIELD_SET(ulTmpValue,DISPLAY_CTRL, HDMI_SELECT, CHANNEL0);
 	else
 		 ulTmpValue= FIELD_SET(ulTmpValue,DISPLAY_CTRL, HDMI_SELECT, CHANNEL1);
+
 
     pokeRegisterDWord((DISPLAY_CTRL+offset), ulTmpValue);
 
