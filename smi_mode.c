@@ -1061,6 +1061,12 @@ static enum drm_mode_status smi_connector_mode_valid(struct drm_connector *conne
 		if ((g_m_connector == USE_DVI_HDMI) || (g_m_connector == USE_VGA_HDMI)||(g_specId == SPC_SM750))
 			return MODE_NOMODE;
 	}
+	
+	if(connector->connector_type == DRM_MODE_CONNECTOR_DVII){
+		if(mode->clock >= 200000)
+			return MODE_NOMODE;
+	}
+
 
 
 	if(lvds_channel && (!lcd_scale)){
